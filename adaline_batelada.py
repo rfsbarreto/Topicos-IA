@@ -12,13 +12,14 @@ for epoca in xrange(0,75):
 	for i in xrange(0,N):
 		erro=(y[i]-(x[i]*peso))
 		somatorio_erro_quadrado+=pow(erro,2)
-		delta_w=erro*x[i]
-		somatorio_erro_x+=delta_w
-		print "erro: ",erro," som: ",somatorio_erro_quadrado
+		erro_x=erro*x[i]
+		somatorio_erro_x+=erro_x
+#		print "erro: ",erro," som: ",somatorio_erro_quadrado
 	dw=(eta/N)*somatorio_erro_x
 	eqm=(1/(2.0*N))*somatorio_erro_quadrado
 #	for i in xrange(0,N):
 	peso=peso+dw
-	print epoca,peso,eqm,(1/2.0)*somatorio_erro_quadrado
+#	if ((epoca+1)%3==0):
+		print epoca,"peso:",peso,"EQM:",eqm
 #print w0
 
