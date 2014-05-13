@@ -1,0 +1,5 @@
+online = read.csv("online.csv",sep=";")
+plot(online$epoca~online$EQM)
+#X11()
+#Windows()
+plot(online$epoca~online$peso)
