@@ -11,13 +11,13 @@ for i in xrange(0,20):
 	y1.append(sin(x1[i]))
 	y2.append(cos(x1[i]))
 	y3.append(x1[i])
-	resultados.append(-pi+0.565*sin(y1[i])+2.657*cos(y2[i])+0.674*y3[i])	
+	resultados.append(-pi+0.565*sin(x1[i])+2.657*cos(x2[i])+0.674*x3[i])	
 peso0,peso1,peso2,peso3=0,0,0,0
 N=8
 eta=0.1
 print "result:",resultados,"\n"
-print x1,"\n",x2,"\n",x3,"\n",x0
-print y1,"\n",y2,"\n",y3,"\n",y0
+print "x1:",x1,"\nx2:",x2,"\nx3:",x3,"x0\n",x0
+print "y1",y1,"\ny2",y2,"\ny3",y3,"y0\n",y0
 #valores corretos
 a1,a2,a3,a0=0.565,2.657,0.674,-pi
 
@@ -37,7 +37,7 @@ for epoca in xrange(0,750):
 		erro_x2=erro*y2[i]
 		erro_x3=erro*y3[i]
       #          somatorio_erro_x+=erro_x
-                print i,erro,y1[i],y2[i],y3[i],y0[i]
+ #               print i,erro,y1[i],y2[i],y3[i],y0[i]
      #           somatorio_erro_x0+=erro_x0
 	       # print "erro: ",erro," som: ",somatorio_erro_quadrado
        		dw1=eta*erro_x1
