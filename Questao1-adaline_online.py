@@ -18,7 +18,7 @@ for epoca in xrange(0,75):
 #	for i in xrange(0,N):
 		peso+=dw
 #		if ((epoca+1)%3==0):
-		print peso
+	print peso
 	eqm=(1/(2.0*N))*somatorio_erro_quadrado
 #	if ((epoca+1)%3==0):
 	print "EQM:",eqm
