@@ -6,7 +6,7 @@ peso=0
 N=7
 b=0.35
 for epoca in xrange(0,75):
-	print "Epoca:",epoca,"\n"
+#	print "Epoca:",epoca,"\n"
 	dw=eta
 	somatorio_erro_quadrado=0
 	for i in xrange(0,N):
@@ -18,7 +18,7 @@ for epoca in xrange(0,75):
 #	for i in xrange(0,N):
 		peso+=dw
 #		if ((epoca+1)%3==0):
-	print peso
+	
 	eqm=(1/(2.0*N))*somatorio_erro_quadrado
 #	if ((epoca+1)%3==0):
-	print "EQM:",eqm
+	print epoca,peso,eqm
