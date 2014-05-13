@@ -1,0 +1,8 @@
+1. Um procedimento usual no treinamento de redes neurais artificiais é utilizar sequencias aleatóriaas de elementos do conjunto de treinamento. Em algumas situações,
+ a sequencia será determinando no valor final dos pesos em outras situações não. Discuta as razoes pelas quais é importante evitar tendêcias no treinamento por meio
+ de sequencias aletórias de treinamento.
+
+R: Deve-se evitar a tendência da amostragem ao se usar elementos aletórios pois assim a amostra terá uma chance maior de ser representativa em relação ao domínio.
+Senão a amostragem poderá resultar um treinamento errôneo que pode representar uma parte da amostragem que não representa todo o dominio e sim uma pequena parte do mesmo.
+Por exemplo se quisessemos obter uma amostra de pessoas em um continente para prever a altura, Treinar o modelo usando apenas pessoas de um país e testar com pessoas do outro
+trará resultados com alta taxa de erro.
