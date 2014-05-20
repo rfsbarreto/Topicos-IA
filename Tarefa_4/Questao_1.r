@@ -1,25 +1,36 @@
 table=read.csv("inputs_questao1.csv",sep=";")
 table[1,4]
 table
+w=[0,0,0,0]
+
 eta=1
 teta=0.2
 A=0
 peso=0
 N=7
 tem_erro=1
+
+tshld <- function(x){
+        ifelse(x<teta,-1,ifelse(x==teta)0,1)
+}
+
+
+
 while(tem_erro){
 #dw=eta/N
 	
 	somatorio_erro_quadrado=0
-	somatorio_erro_x=0
+	somatorio_xiwi=0
 	for( i=1 in xrange(0,N):
-		erro=(y[i]-(x[i]*peso))
-		somatorio_erro_quadrado+=pow(erro,2)
-		erro_x=erro*x[i]
-		somatorio_erro_x+=erro_x
+		#erro=(y[i]-(x[i]*peso))
+		#somatorio_erro_quadrado+=pow(erro,2)
+		x=erro*x[i]
+		somatorio_xiwi+=erro_x
 #		print "erro: ",erro," som: ",somatorio_erro_quadrado
-	dw=(eta/N)*somatorio_erro_x
-	eqm=(1/(2.0*N))*somatorio_erro_quadrado
+	y=tshld(somatorio_xiwi)
+	if y!= table(i,4)
+
+#	eqm=(1/(2.0*N))*somatorio_erro_quadrado
 #	for i in xrange(0,N):
 	peso=peso+dw
 }
