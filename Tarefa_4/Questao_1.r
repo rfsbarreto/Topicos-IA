@@ -12,12 +12,12 @@ while(tem_erro){
 	
 	somatorio_erro_quadrado=0
 	somatorio_erro_x=0
-	for( i=1 in xrange(0,N):
+	for(i=1 in seq(0,N){
 		erro=(y[i]-(x[i]*peso))
 		somatorio_erro_quadrado+=pow(erro,2)
 		erro_x=erro*x[i]
 		somatorio_erro_x+=erro_x
-#		print "erro: ",erro," som: ",somatorio_erro_quadrado
+	}#		print "erro: ",erro," som: ",somatorio_erro_quadrado
 	dw=(eta/N)*somatorio_erro_x
 	eqm=(1/(2.0*N))*somatorio_erro_quadrado
 #	for i in xrange(0,N):
