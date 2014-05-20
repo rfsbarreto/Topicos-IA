@@ -1,16 +1,18 @@
-x=[0,0.1,0.2,0.3,0.4,0.5,0.6]
-y=[0,0,0,0,0,0,0]
+table=read.csv("inputs_questao1.csv",sep=";")
+table[1,4]
+table
 eta=1
 teta=0.2
 A=0
 peso=0
 N=7
-b=0.35
-for epoca in xrange(0,75):
+tem_erro=1
+while(tem_erro){
 #dw=eta/N
+	
 	somatorio_erro_quadrado=0
 	somatorio_erro_x=0
-	for i in xrange(0,N):
+	for( i=1 in xrange(0,N):
 		erro=(y[i]-(x[i]*peso))
 		somatorio_erro_quadrado+=pow(erro,2)
 		erro_x=erro*x[i]
@@ -20,9 +22,14 @@ for epoca in xrange(0,75):
 	eqm=(1/(2.0*N))*somatorio_erro_quadrado
 #	for i in xrange(0,N):
 	peso=peso+dw
-	if ((epoca+1)%3==0):
-		print epoca,"peso:",peso,"EQM:",eqm
+}
+
+
+
+#	if ((epoca+1)%3==0):
+#		print epoca,"peso:",peso,"EQM:",eqm
 #print w0
+
 
 
 
