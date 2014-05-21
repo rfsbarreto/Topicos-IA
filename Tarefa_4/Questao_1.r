@@ -31,6 +31,7 @@ while(tem_erro){
 	if y!= table(i,4)
 
 #	eqm=(1/(2.0*N))*somatorio_erro_quadrado
+
 #	for i in xrange(0,N):
 	peso=peso+dw
 }
