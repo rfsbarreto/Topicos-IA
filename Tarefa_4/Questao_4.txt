@@ -1,2 +1,4 @@
 O perceptron ao contrário do adaline é um modelo de classificação, o adaline é de regressão. Ambos funcionam de maneira semelhante com o diferencial da função threshould que atua
- como um limiar para o perceptron definir a saida do neorônio de modo discreto para ser encontrado o discriminante linear de classificação.
+ como um limiar para o perceptron definir a saida do neurônio de modo discreto,definindo um discriminante linear de classificação. Outra diferença bastante importante é que os perceptrons 
+só atualizam seus pesos ao haver um erro na classificação, fazendo com que o aprendizado diminua conforme o algoritmo vai chegando próximo aos resultados, pois há uma quantidade menor 
+de errose consequentemente de atualizações. Isso não ocorre no Adaline pois este atualiza seus pesos com base no valor do erro
