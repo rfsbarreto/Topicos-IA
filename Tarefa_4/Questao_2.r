@@ -34,7 +34,7 @@ while(epoca < epocaMax)
 			for(k in seq(1,63)){
 				w[k]=w[k]+ table[j,k]*eta*y[j]
 			}
-			w[64]=w[64]+ table[j,k]*eta*y[j]
+			w[64]=w[64]+ eta*y[j]
 		}
 #		cat("\t\tpesos passo",j,"-> ", w,"\n");
 	}
@@ -46,4 +46,17 @@ while(epoca < epocaMax)
 }
 cat("Pesos ao final de 100 epócas: \n")
 cat(w,"\n")
+
+classificador <- function(entrada){
+#	print(entrada)
+		saida=sum(entrada[i,]*w[i])
+#		print(saida)
+		saida=tshld(saida)
+	
+#	print(saida)	
+	return(saida)
+}
+ent= data.frame(c(-1,-1,1,-1,1,1,-1,1,-1,-1,1,-1,-1,-1,1,1,-1,1,-1,1,-1,-1,-1,1,-1,1,-1,1,1,-1,1,-1,1,-1,1,-1,1,-1,-1,1,1,-1,-1,1,-1,-1,-1,1,-1,-1,1,-1,-1,-1,1,-1,1,1,1,-1,1,-1,-1,1))
+cat("Teste para Letra desconhecida, saida: ")
+classificador(ent)
 

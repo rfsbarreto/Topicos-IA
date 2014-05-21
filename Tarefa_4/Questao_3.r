@@ -26,17 +26,12 @@ y7 = c(-1,-1,-1,-1,-1,-1,1,
 
 bias = 1
 teta=0
-w1 = c(rep(0,64))
-w2 = c(rep(0,64))
-w3 = c(rep(0,64))
-w4 = c(rep(0,64))
-w5 = c(rep(0,64))
-w6 = c(rep(0,64))
-w7 = c(rep(0,64))
+w0 = c(rep(0,64))
 
 tshld <- function(x){
         ifelse(x<(-1*teta),-1,ifelse(x>teta,1,0))
 }
+
 perceptron_letras<-function(letra,y,w){
 eta = 1
 n = 7
@@ -60,7 +55,7 @@ while(epoca < epocaMax)
 			for(k in seq(1,63)){
 				w[k]=w[k]+ table[j,k]*eta*y[j]
 			}
-			w[64]=w[64]+ table[j,k]*eta*y[j]
+			w[64]=w[64]+ eta*y[j]
 		}
 #		cat("\t\tpesos passo",j,"-> ", w,"\n");
 	}
@@ -71,15 +66,37 @@ while(epoca < epocaMax)
 
 }
 cat("Pesos da letra ",letra," ao final de 100 epócas: \n")
-cat(w,"\n")
+cat(w,"\n");
+return(w)
 }
 
-perceptron_letras("A",y1,w1)
-perceptron_letras("B",y2,w2)
-perceptron_letras("C",y3,w3)
-perceptron_letras("D",y4,w4)
-perceptron_letras("E",y5,w5)
-perceptron_letras("F",y6,w6)
-perceptron_letras("G",y7,w7)
+w1 = perceptron_letras("A",y1,w0)
+w2=perceptron_letras("B",y2,w0)
+w3=perceptron_letras("C",y3,w0)
+w4=perceptron_letras("D",y4,w0)
+w5=perceptron_letras("E",y5,w0)
+w6=perceptron_letras("F",y6,w0)
+w7=perceptron_letras("G",y7,w0)
 
+#w1
+
+wfinal= data.frame(w1,w2,w3,w4,w5,w6,w7)
+wfinal
+classificador<- function(entrada){
+	saida=c(rep(0,7))
+#	print(entrada)
+	for (i in 1:7){
+		saida[i]=sum(entrada*wfinal[i])
+#		print(saida)
+		saida[i]=tshld(saida[i])
+	}
+#	print(saida)	
+	return(saida)
+
+}
+
+#teste
+ent= data.frame(c(-1,-1,1,1,-1,-1,-1,-1,-1,-1,1,-1,-1,-1,-1,-1,-1,1,-1,-1,-1,-1,-1,1,-1,1,-1,-1,-1,-1,1,-1,1,-1,-1,-1,1,1,1,1,1,-1,-1,1,-1,-1,-1,1,-1,-1,1,-1,-1,-1,1,-1,1,1,1,-1,1,1,1,1))
+cat("Teste para Letra A, saida: ")
+classificador(ent)
 
