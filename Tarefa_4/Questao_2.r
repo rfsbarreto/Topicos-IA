@@ -44,6 +44,6 @@ while(epoca < epocaMax)
 	epoca=epoca+1;
 
 }
-
-print(w)
+cat("Pesos ao final de 100 epócas: \n")
+cat(w,"\n")
 
