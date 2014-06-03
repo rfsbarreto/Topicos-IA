@@ -49,8 +49,10 @@ for (l in 1:L){
   X = matrix( Xd[,l] )
   print(l)
   print("X:")
-  print(X)
-  print(W[[1]])
+  print(ncol(X))
+  print(nrow(X))
+  print(nrow(W[[1]]))
+  print(ncol(W[[1]]))
   V[[1]] = W[[1]] %*% X
   U[[1]] = tanh( V[[1]] )
   for (m in 2:M){
@@ -71,7 +73,14 @@ for (l in 1:L){
   }
 }
 
-X = matrix( c(1, 1) )
+#X = matrix( c(1, 1) )
+print("uhuuu")
+print("colsx: ")
+print(ncol(X))
+print(nrow(X))
+print(ncol(W[[1]]))
+print(nrow(W[[1]]))
+
 
 U[[1]] = tanh( W[[1]] %*% X )
 
