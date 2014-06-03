@@ -29,7 +29,7 @@ delta = vector('list', M)
 W = vector('list', M)
 
 for (m in c(1:M)){
-  W[[m]] = matrix( runif( Jm[m] * En[m] ),Jm[m])
+  W[[m]] = matrix( runif( Jm[m] * En[m] ,-1,1),Jm[m])
 }
 print("WWWWW:")
 print(W)
