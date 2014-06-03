@@ -16,13 +16,14 @@ repmat = function(X,m,n){
 
 eta = 0.1
 
-M = 2
+M = 3
 
-Jm = c( 5, 1)	
+Jm = c( 5,5, 1)	
 
-En = c( 5, 5, 5, 5, 5)
+En = c( 5, 5, 5)
 
 V = vector('list', M)
+#print(V)
 U = vector('list', M)
 delta = vector('list', M)
 W = vector('list', M)
@@ -30,6 +31,9 @@ W = vector('list', M)
 for (m in c(1:M)){
   W[[m]] = matrix( runif( Jm[m] * En[m] ),Jm[m])
 }
+print("WWWWW:")
+print(W)
+
 Xd = t(as.matrix(read.csv("Input_csv.csv",sep=";")))
 Yd = t(as.matrix(read.csv("Output_csv.csv",sep=";")))
 
@@ -47,12 +51,12 @@ print(Yd)
 L = length(Yd)
 for (l in 1:L){
   X = matrix( Xd[,l] )
-  print(l)
-  print("X:")
-  print(ncol(X))
-  print(nrow(X))
-  print(nrow(W[[1]]))
-  print(ncol(W[[1]]))
+#  print(l)
+#  print("X:")
+#  print(ncol(X))
+#  print(nrow(X))
+#  print(nrow(W[[1]]))
+#  print(ncol(W[[1]]))
   V[[1]] = W[[1]] %*% X
   U[[1]] = tanh( V[[1]] )
   for (m in 2:M){
