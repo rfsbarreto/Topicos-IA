@@ -18,7 +18,7 @@ eta = 0.1
 
 M = 2
 
-Jm = c( 2, 1)
+Jm = c( 2, 1)	
 
 En = c( 2, 2)
 
@@ -30,12 +30,19 @@ W = vector('list', M)
 for (m in c(1:M)){
   W[[m]] = matrix( runif( Jm[m] * En[m] ),Jm[m])
 }
+Xd = as.matrix(read.csv("Input_csv.csv",sep=";"))
+Yd = as.matrix(read.csv("Output_csv.csv",sep=";"))
 
-Xd = matrix( c(1, 0, 1, 0, 0, 1, 1, 0, 0, 0, 0, 1, 0, 1, 1, 0, 1, 1, 0, 1, 1, 0, 0, 0, 0, 1, 1, 1, 0, 1, 1, 0, 1, 0, 0, 1, 0, 1, 0, 0, 1, 0, 1, 0, 1, 1, 0, 0, 1, 1, 0, 1, 0, 0, 1, 1), nrow=2, byrow=TRUE)
-Yd = matrix( c(1, 1, 0, 0, 1, 1, 1, 1, 0, 1, 0, 1, 1, 1, 0, 0, 0, 0, 0, 1, 0, 1, 0, 1, 0, 1, 0, 0), nrow = 1, byrow=TRUE )
+#Xd = matrix( c(1, 0, 1, 0, 0, 1, 1, 0, 0, 0, 0, 1, 0, 1, 1, 0, 1, 1, 0, 1, 1, 0, 0, 0, 0, 1, 1, 1, 0, 1, 1, 0, 1, 0, 0, 1, 0, 1, 0, 0, 1, 0, 1, 0, 1, 1, 0, 0, 1, 1, 0, 1, 0, 0, 1, 1), nrow=2, byrow=TRUE)
+#Yd = matrix( c(1, 1, 0, 0, 1, 1, 1, 1, 0, 1, 0, 1, 1, 1, 0, 0, 0, 0, 0, 1, 0, 1, 0, 1, 0, 1, 0, 0), nrow = 1, byrow=TRUE )
 
-Xd = repmat(Xd, 1, 100) # aqui aumentei 100 vezes o tamanho original
-Yd = repmat(Yd, 1, 100) # aqui aumentei 100 vezes o tamanho original
+#Xd = repmat(Xd, 1, 100) # aqui aumentei 100 vezes o tamanho original
+#Yd = repmat(Yd, 1, 100) # aqui aumentei 100 vezes o tamanho original
+
+print("Xd : ")
+print(Xd)
+print("Yd : ")
+print(Yd)
 
 L = length(Yd)
 for (l in 1:L){
