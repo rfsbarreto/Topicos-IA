@@ -18,9 +18,9 @@ eta = 0.1
 
 M = 2
 
-Jm = c( 2, 1)	
+Jm = c( 5, 1)	
 
-En = c( 2, 2)
+En = c( 5, 5, 5, 5, 5)
 
 V = vector('list', M)
 U = vector('list', M)
@@ -30,8 +30,8 @@ W = vector('list', M)
 for (m in c(1:M)){
   W[[m]] = matrix( runif( Jm[m] * En[m] ),Jm[m])
 }
-Xd = as.matrix(read.csv("Input_csv.csv",sep=";"))
-Yd = as.matrix(read.csv("Output_csv.csv",sep=";"))
+Xd = t(as.matrix(read.csv("Input_csv.csv",sep=";")))
+Yd = t(as.matrix(read.csv("Output_csv.csv",sep=";")))
 
 #Xd = matrix( c(1, 0, 1, 0, 0, 1, 1, 0, 0, 0, 0, 1, 0, 1, 1, 0, 1, 1, 0, 1, 1, 0, 0, 0, 0, 1, 1, 1, 0, 1, 1, 0, 1, 0, 0, 1, 0, 1, 0, 0, 1, 0, 1, 0, 1, 1, 0, 0, 1, 1, 0, 1, 0, 0, 1, 1), nrow=2, byrow=TRUE)
 #Yd = matrix( c(1, 1, 0, 0, 1, 1, 1, 1, 0, 1, 0, 1, 1, 1, 0, 0, 0, 0, 0, 1, 0, 1, 0, 1, 0, 1, 0, 0), nrow = 1, byrow=TRUE )
@@ -47,6 +47,10 @@ print(Yd)
 L = length(Yd)
 for (l in 1:L){
   X = matrix( Xd[,l] )
+  print(l)
+  print("X:")
+  print(X)
+  print(W[[1]])
   V[[1]] = W[[1]] %*% X
   U[[1]] = tanh( V[[1]] )
   for (m in 2:M){
