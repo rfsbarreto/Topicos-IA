@@ -49,34 +49,36 @@ print("Yd : ")
 print(Yd)
 
 L = length(Yd)
-for (l in 1:L){
-  X = matrix( Xd[,l] )
-#  print(l)
-#  print("X:")
-#  print(ncol(X))
-#  print(nrow(X))
-#  print(nrow(W[[1]]))
-#  print(ncol(W[[1]]))
-  V[[1]] = W[[1]] %*% X
-  U[[1]] = tanh( V[[1]] )
-  for (m in 2:M){
-    V[[m]] = W[[m]] %*% U[[m-1]]
-    U[[m]] = tanh( V[[m]] )
-  }
-  Y = U[[m]]
-  E = t(Y - Yd[,l]) %*% (Y - Yd[,l]) #
-  delta[[M]] = (Yd[,l]-Y) * (1/cosh(V[[M]]) )^2 #sech(z) = 1/cosh(z)
-  
-  W[[M]] = W[[M]] + 2*eta*delta[[M]] %*% t(U[[M-1]]) #
-  for (m in M-1:1){
-    delta[[m]] = t(W[[m+1]]) %*% delta[[m+1]] * (1/cosh(V[[m]]) )^2 #sech(z) = 1/cosh(z)
-    if( m == 1)
-        W[[m]] = W[[m]] + 2*eta*delta[[m]] %*% t(X)
-    else
-        W[[m]] = W[[m]] + 2*eta*delta[[m]] %*% t(U[[m-1]]) #
-  }
+for (epoca in 1:1000){
+	for (l in 1:L){
+	  X = matrix( Xd[,l] )
+	#  print(l)
+	  if ( l <4)
+#	   print("X:")
+#	   print(X)
+#	   print(nrow(X))
+#	   print(nrow(W[[1]]))
+#	   print(ncol(W[[1]]))
+	  V[[1]] = W[[1]] %*% X
+	  U[[1]] = tanh( V[[1]] )
+	  for (m in 2:M){
+	    V[[m]] = W[[m]] %*% U[[m-1]]
+	    U[[m]] = tanh( V[[m]] )
+	  }
+	  Y = U[[m]]
+	  E = t(Y - Yd[,l]) %*% (Y - Yd[,l]) #
+	  delta[[M]] = (Yd[,l]-Y) * (1/cosh(V[[M]]) )^2 #sech(z) = 1/cosh(z)
+	  
+	  W[[M]] = W[[M]] + 2*eta*delta[[M]] %*% t(U[[M-1]]) #
+	  for (m in M-1:1){
+	    delta[[m]] = t(W[[m+1]]) %*% delta[[m+1]] * (1/cosh(V[[m]]) )^2 #sech(z) = 1/cosh(z)
+	    if( m == 1)
+		W[[m]] = W[[m]] + 2*eta*delta[[m]] %*% t(X)
+	    else
+		W[[m]] = W[[m]] + 2*eta*delta[[m]] %*% t(U[[m-1]]) #
+	  }
+	}
 }
-
 #X = matrix( c(1, 1) )
 print("uhuuu")
 print("colsx: ")
@@ -85,12 +87,18 @@ print(nrow(X))
 print(ncol(W[[1]]))
 print(nrow(W[[1]]))
 
-
+X=c(2.3,7.37,1860,0.55,641)#c(0,30.7,5300,0.5,661)
 U[[1]] = tanh( W[[1]] %*% X )
 
-for (m in 2:M){
-  U[[m]] = tanh( W[[m]] %*% U[[m-1]] )
+for (m in 2:(M)){
+  a= W[[m]] %*% U[[m-1]]
+  if (m==M)
+    print("A")
+    print(a)
+  U[[m]] = tanh( a)
 }
-
-print( U[[m]] )
-
+a= W[[M]] %*% U[[M-1]]
+print("U")
+print( a )
+print(" pesos finais:")
+print(W[[3]])
