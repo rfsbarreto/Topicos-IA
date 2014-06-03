@@ -9,25 +9,29 @@ U = vector('list', M)
 delta = vector('list', M)
 for (m in c(1:M)){
 	W[[m]] = matrix(runif(Jm[m]*En[m]),Jm[m])
-	V[[m]]
 }
 #Xd = c(1,1,1,0)
 #Yd = c()
 Xd = matrix(c(1,0,1,0,0,1,1,0,0,0,0,1,0,1,1,0,1,1,0,1,1,0,0,0,0,1,1,1,0,1,1,0,1,0,0,1,0,1,0,0,1,0,1,0,1,1,0,0,1,1,0,1,0,0,1,1),nrow=2,byrow=TRUE)
 Yd = c(1,1,0,0,1,1,1,1,0,1,0,1,1,1,0,0,0,0,0,1,0,1,0,1,0,1,0,0)
 L = length(Yd)
-for(l in L){
+for(l in 1:L){
 	X = matrix(Xd[,l])
-	V[[1]] = W[[1]] %*% X
-	U[[1]] - tanh(V[[1]])
+	V[[1]] = (W[[1]]%*%X)
+	U[[1]] = tanh(V[[1]])
+	
 	for(m in 2:M){
 		V[[m]] = W[[m]] %*% U[[m-1]]
 		U[[m]] = tanh(V[[m]])
+		
 	}
-	Y = U[[m]]
-	E = (Y-Yd[,l]) %*% (Y-Yd[,l])
-	delta[[m]] = (Yd[,l]-Y)*(1/cosh(V[[m]]))^2
-	W[[m]] = W[[m]] + 2 * eta * delta[[m]] %*% U[[m-1]]
+	Y = U[[M]]
+	E = (Y-Yd[l]) %*% (Y-Yd[l])
+	print(E)
+	delta[[M]] = (Yd[l]-Y)*(1/cosh(V[[M]]))^2
+	print(delta[[M]])
+	print(U[[M-1]])
+	W[[M]] = W[[M]] + 2 * eta * delta[[M]] %*% U[[M-1]]
 	for(m in M-1:1){
 		delta[[m]] = t(W[[m+1]])%*%delta[[m+1]]*(1/cosh(V[[m]]))^2
 		if(m==1)
