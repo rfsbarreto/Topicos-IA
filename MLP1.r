@@ -69,7 +69,7 @@ Erro_abs= matrix(0,ep,L)
 
 EErro_quad=matrix(0,ep,1)
 
-#L=45
+L=45
 for (epoca in 1:ep){
 	for (l in 1:L){
 	  X = matrix( Xd[,l] )
@@ -119,11 +119,13 @@ print("vai ser true!")
 #print(Erro_quad[,L])
 print(sum(E[1,]))
 plot(Erro_quad[,L])
-plot(E1/L)
-plot(E2)
+plot(E1/L,ylab="Media do erro quadrado")
+plot(E2,ylab="Media do erro Absoluto")
 plot(squared_R)
 #X = matrix( c(1, 1) )
 #print()
+print(" pesos finais:")
+print(W)
 
 classifica<- function(l) {       #X=c(2.3,7.37,1860,0.55,641)#c(0,30.7,5300,0.5,661)
 #	X[1]= (X[1]-min(Xd_original[1,])) /(max(Xd_original[1,])-min(Xd_original[1,]))
@@ -144,6 +146,7 @@ classifica<- function(l) {       #X=c(2.3,7.37,1860,0.55,641)#c(0,30.7,5300,0.5,
 	}
 	print("saidas:")
 	print(U)
+	print(" Tamanho da particula")
 	print(( (U[[m]]+1) * (max(Yd_original[1,])-min(Yd_original[1,])))/(2)+min(Yd_original[1,])) 
 	
 }
@@ -152,8 +155,6 @@ classifica(59)
 #a= W[[M]] %*% U[[M-1]]
 #print("U")
 #print( U[m] )
-print(" pesos finais:")
-print(W)
 #print(o==W[[1]])
 #print("U")
 #print(U)
