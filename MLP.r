@@ -14,7 +14,7 @@ repmat = function(X,m,n){
 #---------------------------------------------------------------------
 
 
-eta = 0.1
+eta = 0.7
 
 M = 3
 
@@ -90,7 +90,13 @@ print(nrow(X))
 print(ncol(W[[1]]))
 print(nrow(W[[1]]))
 
-X=c(2.3,7.37,1860,0.55,641)#c(0,30.7,5300,0.5,661)
+i = runif(1,1,60)
+print("i:")
+print(i)
+X=Xd[,i]
+
+
+#c(2.3,7.37,1860,0.55,641)#
 U[[1]] = tanh( W[[1]] %*% X )
 
 for (m in 2:(M)){
@@ -101,7 +107,13 @@ for (m in 2:(M)){
   U[[m]] = tanh( a)
 }
 a= W[[M]] %*% U[[M-1]]
-print("U")
+
+
+print("Saida predita")
 print( a )
+print("Saida esperada")
+print(Yd[i])
+print("erro: ")
+print(Yd[i]-a)
 print(" pesos finais:")
 print(W)
