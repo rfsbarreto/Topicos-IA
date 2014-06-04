@@ -42,9 +42,12 @@ Yd = t(as.matrix(read.csv("Output_csv.csv",sep=";")))
 
 #Xd = repmat(Xd, 1, 100) # aqui aumentei 100 vezes o tamanho original
 #Yd = repmat(Yd, 1, 100) # aqui aumentei 100 vezes o tamanho original
+Xd[2,]=(Xd[2,]/15)-1
+Xd[3,]=(Xd[3,]-650)
 
 print("Xd : ")
-print(Xd)
+
+print(max(Xd[3,]))
 print("Yd : ")
 print(Yd)
 
@@ -69,13 +72,13 @@ for (epoca in 1:1000){
 	  E = t(Y - Yd[,l]) %*% (Y - Yd[,l]) #
 	  delta[[M]] = (Yd[,l]-Y) * (1/cosh(V[[M]]) )^2 #sech(z) = 1/cosh(z)
 	  
-	  W[[M]] = W[[M]] + 2*eta*delta[[M]] %*% t(U[[M-1]]) #
+	  W[[M]] = W[[M]] + eta*delta[[M]] %*% t(U[[M-1]]) #
 	  for (m in M-1:1){
 	    delta[[m]] = t(W[[m+1]]) %*% delta[[m+1]] * (1/cosh(V[[m]]) )^2 #sech(z) = 1/cosh(z)
 	    if( m == 1)
-		W[[m]] = W[[m]] + 2*eta*delta[[m]] %*% t(X)
+		W[[m]] = W[[m]] + eta*delta[[m]] %*% t(X)
 	    else
-		W[[m]] = W[[m]] + 2*eta*delta[[m]] %*% t(U[[m-1]]) #
+		W[[m]] = W[[m]] + eta*delta[[m]] %*% t(U[[m-1]]) #
 	  }
 	}
 }
@@ -101,4 +104,4 @@ a= W[[M]] %*% U[[M-1]]
 print("U")
 print( a )
 print(" pesos finais:")
-print(W[[3]])
+print(W)
