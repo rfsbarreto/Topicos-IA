@@ -28,6 +28,7 @@ delta = vector('list', M) 	#representa o delta minusculo
 W = vector('list', M)		#Vetor de Pesos
 
 # Geraçao de pesos aleatorios
+set.seed(10000)
 for (m in c(1:M)){
   W[[m]] = matrix( runif( Jm[m] * En[m] ,-0.2,0.2),Jm[m])
 }
@@ -53,25 +54,32 @@ Yd[1,]=(Yd[1,]-min(Yd[1,]))*2/ (max(Yd[1,])-min(Yd[1,]))-1
 print(Xd)
 print(Yd)
 L =  length(Yd)
-
-ep=2000
-y_ = sum(Yd )/L
+L=45
+ep=300
+y2=sum(Yd)
+y3=sum(head(t(Yd),L))
+print(y2)
+print(y3)
+y_ = sum(head(t(Yd),n=L) )/L
 print("Y_")
 print(y_)
 EE=matrix(0,ep,L)
 E=matrix(0,ep,L)
 E1=matrix(0,ep,1)
 E2=matrix(0,ep,1)
-
+E3=matrix(0,ep,1)
 EE1=matrix(0,ep,1)
 Erro_quad= matrix(0,ep,L)
 Erro_abs= matrix(0,ep,L)
 
 EErro_quad=matrix(0,ep,1)
 
-L=45
+
 for (epoca in 1:ep){
-	for (l in 1:L){
+#	id = t(sample(L,replace=F))
+	id = seq(1,L)
+#	print(id)
+	for (l in 1:L){  #1:L){
 	  X = matrix( Xd[,l] )
 	  V[[1]] = W[[1]] %*% X
 	  #print(t(V[[1]]))
@@ -82,7 +90,8 @@ for (epoca in 1:ep){
 	    U[[m]] = tanh( V[[m]] )
 	  }
 	  Y = U[[m]]
-	  Erro_quad[epoca,l]=t(Yd[,l]-Y) %*% (Yd[,l]-Y)
+	  Erro_quad[epoca,l]=t(Y - Yd[,l]) %*% (Y - Yd[,l])
+	 # Erro_quad[epoca,l]=Erro_quad[epoca,l]/2
 	  Erro_abs[epoca,l]=t(  abs(Yd[,l]-Y)    )             
 	  EE[epoca,l]=t(Yd[,l]-y_) %*% (Yd[,l]-y_)
 	  delta[[M]] = (Yd[,l]-Y) * (1/cosh(V[[M]]) )^2 #sech(z) = 1/cosh(z)
@@ -107,7 +116,8 @@ for (epoca in 1:ep){
 	}
 #	EErro_quad[epoca]=sum(Erro_quad[epoca,])
 	E1[epoca]=sum(Erro_quad[epoca,])   #soma dos erros quadrados
-        E2[epoca]=mean(Erro_abs[epoca,])   # media dos erros absolutos	
+        E3[epoca]=mean(Erro_quad[epoca,]) 
+	E2[epoca]=mean(Erro_abs[epoca,])   # media dos erros absolutos	
 	EE1[epoca]=sum(EE[epoca,])
 }
 
@@ -118,10 +128,10 @@ for (i in 1:ep)
 print("vai ser true!")
 #print(Erro_quad[,L])
 print(sum(E[1,]))
-plot(Erro_quad[,L])
-plot(E1/L,ylab="Media do erro quadrado")
-plot(E2,ylab="Media do erro Absoluto")
-plot(squared_R)
+plot(Erro_quad[,L],type='l')
+plot(E3,ylab="Media do erro quadrado",type='l')
+plot(E2,ylab="Media do erro Absoluto",type='l')
+plot(squared_R,type='l')
 #X = matrix( c(1, 1) )
 #print()
 print(" pesos finais:")
@@ -145,13 +155,14 @@ classifica<- function(l) {       #X=c(2.3,7.37,1860,0.55,641)#c(0,30.7,5300,0.5,
 	  U[[m]] = tanh( a)
 	}
 	print("saidas:")
-	print(U)
+#	print(U)
 	print(" Tamanho da particula")
 	print(( (U[[m]]+1) * (max(Yd_original[1,])-min(Yd_original[1,])))/(2)+min(Yd_original[1,])) 
 	
 }
 
-classifica(59)
+for ( i in 46:60)
+  classifica(i)
 #a= W[[M]] %*% U[[M-1]]
 #print("U")
 #print( U[m] )
