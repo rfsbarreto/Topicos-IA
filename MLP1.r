@@ -55,7 +55,7 @@ print(Xd)
 print(Yd)
 L =  length(Yd)
 #L=45
-ep=7
+ep=700
 y2=sum(Yd)
 y3=sum(head(t(Yd),L))
 print(y2)
