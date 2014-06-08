@@ -54,7 +54,7 @@ Yd[1,]=(Yd[1,]-min(Yd[1,]))*2/ (max(Yd[1,])-min(Yd[1,]))-1
 print(Xd)
 print(Yd)
 L =  length(Yd)
-L=45
+#L=45
 ep=300
 y2=sum(Yd)
 y3=sum(head(t(Yd),L))
