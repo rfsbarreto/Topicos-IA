@@ -55,7 +55,7 @@ print(Xd)
 print(Yd)
 L =  length(Yd)
 #L=45
-ep=300
+ep=7
 y2=sum(Yd)
 y3=sum(head(t(Yd),L))
 print(y2)
@@ -71,7 +71,8 @@ E3=matrix(0,ep,1)
 EE1=matrix(0,ep,1)
 Erro_quad= matrix(0,ep,L)
 Erro_abs= matrix(0,ep,L)
-
+erro_min= matrix(0,ep,1)
+erro_max= matrix(0,ep,1)
 EErro_quad=matrix(0,ep,1)
 
 
@@ -119,6 +120,8 @@ for (epoca in 1:ep){
         E3[epoca]=mean(Erro_quad[epoca,]) 
 	E2[epoca]=mean(Erro_abs[epoca,])   # media dos erros absolutos	
 	EE1[epoca]=sum(EE[epoca,])
+	erro_min[epoca]=min(Erro_quad[epoca,])
+    	erro_max[epoca]=max(Erro_quad[epoca,])
 }
 
 squared_R = c(rep(0,ep))
@@ -132,6 +135,9 @@ plot(Erro_quad[,L],type='l')
 plot(E3,ylab="Media do erro quadrado",type='l')
 plot(E2,ylab="Media do erro Absoluto",type='l')
 plot(squared_R,type='l')
+plot(erro_min,type='l')
+plot(erro_max,type='l')
+
 #X = matrix( c(1, 1) )
 #print()
 print(" pesos finais:")
