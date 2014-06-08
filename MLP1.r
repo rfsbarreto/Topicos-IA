@@ -142,6 +142,11 @@ plot(erro_max,type='l')
 #print()
 print(" pesos finais:")
 print(W)
+unscale<- function(xl){
+	 ( (xl+1) * (max(Yd_original[1,])-min(Yd_original[1,])))/(2)+min(Yd_original[1,])
+# xl ** (max(Yd_original[1,])-min(Yd_original[1,])))/(2)+min(Yd_original[1,]))
+	}
+
 
 classifica<- function(l) {       #X=c(2.3,7.37,1860,0.55,641)#c(0,30.7,5300,0.5,661)
 #	X[1]= (X[1]-min(Xd_original[1,])) /(max(Xd_original[1,])-min(Xd_original[1,]))
@@ -163,12 +168,16 @@ classifica<- function(l) {       #X=c(2.3,7.37,1860,0.55,641)#c(0,30.7,5300,0.5,
 	print("saidas:")
 #	print(U)
 	print(" Tamanho da particula")
-	print(( (U[[m]]+1) * (max(Yd_original[1,])-min(Yd_original[1,])))/(2)+min(Yd_original[1,])) 
-	
+#	print(( (U[[m]]+1) * (max(Yd_original[1,])-min(Yd_original[1,])))/(2)+min(Yd_original[1,])) 
+	print(unscale((U[[m]])))
 }
 
 for ( i in 46:60)
   classifica(i)
+
+
+unscale(min(Yd[1,])) == min(Yd_original[1,])
+unscale(max(Yd[1,])) ==max(Yd_original[1,]) 
 #a= W[[M]] %*% U[[M-1]]
 #print("U")
 #print( U[m] )
