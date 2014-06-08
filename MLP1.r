@@ -13,6 +13,10 @@ repmat = function(X,m,n){
 }
 #---------------------------------------------------------------------
 
+unscale<- function(xl){
+	 ( (xl+1) * (max(Yd_original[1,])-min(Yd_original[1,])))/(2)+min(Yd_original[1,])
+# xl ** (max(Yd_original[1,])-min(Yd_original[1,])))/(2)+min(Yd_original[1,]))
+	}
 eta = 0.1 	#coeficiente aprendizagem
 
 M =2		#Numero de camadas 
@@ -51,30 +55,30 @@ Xd[5,]=(Xd[5,]-min(Xd[5,])) /(max(Xd[5,])-min(Xd[5,]))
 Yd[1,]=(Yd[1,]-min(Yd[1,]))*2/ (max(Yd[1,])-min(Yd[1,]))-1
 
 
-print(Xd)
-print(Yd)
+#print(Xd)
+#print(Yd)
 L =  length(Yd)
-#L=45
-ep=700
-y2=sum(Yd)
-y3=sum(head(t(Yd),L))
-print(y2)
-print(y3)
-y_ = sum(head(t(Yd),n=L) )/L
+L=41
+ep=400
+#print(sum(head(t(Yd),60))/60)
+y_ = sum( c(head(t(Yd),L)) )/L
 print("Y_")
 print(y_)
-EE=matrix(0,ep,L)
-E=matrix(0,ep,L)
-E1=matrix(0,ep,1)
-E2=matrix(0,ep,1)
-E3=matrix(0,ep,1)
-EE1=matrix(0,ep,1)
-Erro_quad= matrix(0,ep,L)
-Erro_abs= matrix(0,ep,L)
-erro_min= matrix(0,ep,1)
-erro_max= matrix(0,ep,1)
-EErro_quad=matrix(0,ep,1)
 
+
+###########inicializ_matrizes <- function(){
+ EE=matrix(0,ep,L)
+ E=matrix(0,ep,L)
+ E1=matrix(0,ep,1)
+ E2=matrix(0,ep,1)
+ E3=matrix(0,ep,1)
+ EE1=matrix(0,ep,1)
+ Erro_quad= matrix(0,ep,L)
+ Erro_abs= matrix(0,ep,L)
+ erro_min= matrix(0,ep,1)
+ erro_max= matrix(0,ep,1)
+ EErro_quad=matrix(0,ep,1)
+###################}
 
 for (epoca in 1:ep){
 #	id = t(sample(L,replace=F))
@@ -97,6 +101,7 @@ for (epoca in 1:ep){
 	  EE[epoca,l]=t(Yd[,l]-y_) %*% (Yd[,l]-y_)
 	  delta[[M]] = (Yd[,l]-Y) * (1/cosh(V[[M]]) )^2 #sech(z) = 1/cosh(z)
 	  #print("deltaM:")
+
 	  #print(delta[[M]]) 
 	  aux= 2*eta*delta[[M]] %*% t(U[[M-1]]) #
 	 # print(aux)
@@ -123,7 +128,7 @@ for (epoca in 1:ep){
 	erro_min[epoca]=min(Erro_quad[epoca,])
     	erro_max[epoca]=max(Erro_quad[epoca,])
 }
-
+#print( Erro_quad[5,60])
 squared_R = c(rep(0,ep))
 y_ = sum(Yd[,l] ) /L
 for (i in 1:ep)
@@ -135,17 +140,13 @@ plot(Erro_quad[,L],type='l')
 plot(E3,ylab="Media do erro quadrado",type='l')
 plot(E2,ylab="Media do erro Absoluto",type='l')
 plot(squared_R,type='l')
-plot(erro_min,type='l')
-plot(erro_max,type='l')
+plot((erro_min),type='l')
+plot((erro_max),type='l')
 
 #X = matrix( c(1, 1) )
 #print()
 print(" pesos finais:")
 print(W)
-unscale<- function(xl){
-	 ( (xl+1) * (max(Yd_original[1,])-min(Yd_original[1,])))/(2)+min(Yd_original[1,])
-# xl ** (max(Yd_original[1,])-min(Yd_original[1,])))/(2)+min(Yd_original[1,]))
-	}
 
 
 classifica<- function(l) {       #X=c(2.3,7.37,1860,0.55,641)#c(0,30.7,5300,0.5,661)
@@ -178,6 +179,12 @@ for ( i in 46:60)
 
 unscale(min(Yd[1,])) == min(Yd_original[1,])
 unscale(max(Yd[1,])) ==max(Yd_original[1,]) 
+print(min(erro_min))
+print(unscale(min(erro_min)))
+print(min(erro_max))
+print(unscale(min(erro_max)))
+unscale(0)
+unscale(0.6)
 #a= W[[M]] %*% U[[M-1]]
 #print("U")
 #print( U[m] )
