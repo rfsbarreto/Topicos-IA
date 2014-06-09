@@ -40,7 +40,6 @@ unscale<- function(xl){
 # xl ** (max(Yd_original[1,])-min(Yd_original[1,])))/(2)+min(Yd_original[1,]))
 	}
 eta = 0.3 	#coeficiente aprendizagem
-
 M =2		#Numero de camadas 
 
 Jm = c( 5, 1)	#neuronios por camadas
@@ -78,8 +77,8 @@ Xd[5,]=(Xd[5,]-min(Xd[5,])) /(max(Xd[5,])-min(Xd[5,]))
 Yd[1,]=(Yd[1,]-min(Yd[1,]))*2/ (max(Yd[1,])-min(Yd[1,]))-1
 
 
-#print(Xd)
-#print(Yd)
+print(Xd)
+print(Yd)
 L =  length(Yd)
 L=41
 ep=700
@@ -87,6 +86,17 @@ ep=700
 y_ = sum( c(head(t(Yd),L)) )/L
 print("Y_")
 print(y_)
+EE=matrix(0,ep,L)
+E=matrix(0,ep,L)
+E1=matrix(0,ep,1)
+E2=matrix(0,ep,1)
+E3=matrix(0,ep,1)
+EE1=matrix(0,ep,1)
+Erro_quad= matrix(0,ep,L)
+Erro_abs= matrix(0,ep,L)
+erro_min= matrix(0,ep,1)
+erro_max= matrix(0,ep,1)
+EErro_quad=matrix(0,ep,1)
 
 ###################}
 
@@ -252,11 +262,14 @@ plot(unscale(Ys[,41]),type='l')#,xlim=c(0,1000),ylim=c(0,1))
 plot((erro_max),type='l')
 plot((erro_max1),type='l')
 
-
 #X = matrix( c(1, 1) )
 #print()
 print(" pesos finais:")
 print(W)
+unscale<- function(xl){
+	 ( (xl+1) * (max(Yd_original[1,])-min(Yd_original[1,])))/(2)+min(Yd_original[1,])
+# xl ** (max(Yd_original[1,])-min(Yd_original[1,])))/(2)+min(Yd_original[1,]))
+	}
 
 
 
