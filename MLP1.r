@@ -1,6 +1,6 @@
 # clear all
 rm( list = ls() )
-
+pdf(file="Rplots.pdf")
 #---------------------------------------------------------------------
 # aqui utilizei uma  função para aumentar as amostra em 100 vezes
 # não será necessário porque vocês tem que fazer em função de um número
@@ -12,7 +12,29 @@ repmat = function(X,m,n){
   matrix(t(matrix(X,mx,nx*n)),mx*m,nx*n,byrow=T)
 }
 #---------------------------------------------------------------------
+classifica<- function(l) {       #X=c(2.3,7.37,1860,0.55,641)#c(0,30.7,5300,0.5,661)
+#	X[1]= (X[1]-min(Xd_original[1,])) /(max(Xd_original[1,])-min(Xd_original[1,]))
+#	X[2]= (X[2]-min(Xd_original[2,])) /(max(Xd_original[2,])-min(Xd_original[2,]))
+#	X[3]=(X[3]-min(Xd_original[3,])) /(max(Xd_original[3,])-min(Xd_original[3,]))
+#	X[4]=(X[4]-min(Xd_original[4,])) /(max(Xd_original[4,])-min(Xd_original[4,]))
+#	X[5]=(X[5]-min(Xd_original[5,])) /(max(Xd_original[5,])-min(Xd_original[5,]))
+#	Y[1]=(Y[1]-min(Yd_original[1,]))*2/ (max(Yd_original[1,])-min(Yd_original[1,]))-1
 
+	U[[1]] = tanh( W[[1]] %*% matrix(Xd[,l]) )
+
+	for (m in 2:(M)){
+	  a= W[[m]] %*% U[[m-1]]
+	 # if (m==M)
+	  #  print("A")
+	  #  print(a)
+	  U[[m]] = tanh( a)
+	}
+	print("saidas:")
+#	print(U)
+	print(" Tamanho da particula")
+#	print(( (U[[m]]+1) * (max(Yd_original[1,])-min(Yd_original[1,])))/(2)+min(Yd_original[1,])) 
+	print(unscale((U[[m]])))
+}
 unscale<- function(xl){
 	 ( (xl+1) * (max(Yd_original[1,])-min(Yd_original[1,])))/(2)+min(Yd_original[1,])
 # xl ** (max(Yd_original[1,])-min(Yd_original[1,])))/(2)+min(Yd_original[1,]))
@@ -25,19 +47,8 @@ Jm = c( 5, 1)	#neuronios por camadas
 #plot(Jm)
 En = c(  5, 5) 	#pesos/camada
 
-V = vector('list', M)		#vetor auxiliar, armazena calculo do somatorio dos pesos* entradas
-#print(V)
-U = vector('list', M)           #vetor auxiliar,armazena resultado da funçao ativacao
-delta = vector('list', M) 	#representa o delta minusculo
-W = vector('list', M)		#Vetor de Pesos
 
-# Geraçao de pesos aleatorios
-set.seed(10000)
-for (m in c(1:M)){
-  W[[m]] = matrix( runif( Jm[m] * En[m] ,-0.2,0.2),Jm[m])
-}
 
-o=W[[1]]
 
 #leitura de dados
 Xd_original = t(as.matrix(read.csv("Input_csv.csv",sep=";")))
@@ -65,6 +76,34 @@ y_ = sum( c(head(t(Yd),L)) )/L
 print("Y_")
 print(y_)
 
+###################}
+
+############################Cross-Validation
+## Inicialização
+n_fold = 3 #Numero de folds
+folded = round(L/n_fold)
+orig = sample(L,replace=F)
+orig = seq(1,L)
+erro_val_orig = vector('list',n_fold)
+Erro_validacao= matrix(0,n_fold,1)
+# Separando os K subconjuntos de vetores
+for(k in 1:n_fold){
+
+V = vector('list', M)		#vetor auxiliar, armazena calculo do somatorio dos pesos* entradas
+#print(V)
+U = vector('list', M)           #vetor auxiliar,armazena resultado da funçao ativacao
+delta = vector('list', M) 	#representa o delta minusculo
+W = vector('list', M)		#Vetor de Pesos
+
+
+# Geraçao de pesos aleatorios
+set.seed(10000)
+for (m in c(1:M)){
+  W[[m]] = matrix( runif( Jm[m] * En[m] ,-0.2,0.2),Jm[m])
+}
+
+o=W[[1]]
+
 
 ###########inicializ_matrizes <- function(){
  EE=matrix(0,ep,L)
@@ -78,13 +117,32 @@ print(y_)
  erro_min= matrix(0,ep,1)
  erro_max= matrix(0,ep,1)
  EErro_quad=matrix(0,ep,1)
-###################}
+
+
+	temp = c(rep(0,folded))
+	for(v in 1:folded){
+	temp[v] = orig[(v+((k-1)*folded))]
+	}
+	erro_val_orig[[k]] = temp[!is.na(temp)]# Tira os NA dos vetores
+}
+
+
+for(k in 1:n_fold){
+
+
+for(b in 2:n_fold-1){
+
+erro_val = union(erro_val_orig[[b]],erro_val_orig[[(b+1)]])
+}
+
+erro_val = setdiff(erro_val,erro_val_orig[[k]])
 
 for (epoca in 1:ep){
 #	id = t(sample(L,replace=F))
-	id = seq(1,L)
+#	id = seq(1,L)
+	id = t(erro_val)
 #	print(id)
-	for (l in 1:L){  #1:L){
+	for (l in id){  #1:L){
 	  X = matrix( Xd[,l] )
 	  V[[1]] = W[[1]] %*% X
 	  #print(t(V[[1]]))
@@ -122,17 +180,26 @@ for (epoca in 1:ep){
 	}
 #	EErro_quad[epoca]=sum(Erro_quad[epoca,])
 	E1[epoca]=sum(Erro_quad[epoca,])   #soma dos erros quadrados
-        E3[epoca]=mean(Erro_quad[epoca,]) 
+    E3[epoca]=mean(Erro_quad[epoca,]) 
 	E2[epoca]=mean(Erro_abs[epoca,])   # media dos erros absolutos	
+	
 	EE1[epoca]=sum(EE[epoca,])
 	erro_min[epoca]=min(Erro_quad[epoca,])
     	erro_max[epoca]=max(Erro_quad[epoca,])
+	
 }
+
+
+Erro_validacao[k]=length(erro_val_orig[[k]])*mean(E3)
 #print( Erro_quad[5,60])
 squared_R = c(rep(0,ep))
 y_ = sum(Yd[,l] ) /L
 for (i in 1:ep)
   squared_R[i]=1- ( E1[i] / EE1[i] )
+
+print(erro_val)  
+
+  
 print("vai ser true!")
 #print(Erro_quad[,L])
 print(sum(E[1,]))
@@ -149,32 +216,12 @@ print(" pesos finais:")
 print(W)
 
 
-classifica<- function(l) {       #X=c(2.3,7.37,1860,0.55,641)#c(0,30.7,5300,0.5,661)
-#	X[1]= (X[1]-min(Xd_original[1,])) /(max(Xd_original[1,])-min(Xd_original[1,]))
-#	X[2]= (X[2]-min(Xd_original[2,])) /(max(Xd_original[2,])-min(Xd_original[2,]))
-#	X[3]=(X[3]-min(Xd_original[3,])) /(max(Xd_original[3,])-min(Xd_original[3,]))
-#	X[4]=(X[4]-min(Xd_original[4,])) /(max(Xd_original[4,])-min(Xd_original[4,]))
-#	X[5]=(X[5]-min(Xd_original[5,])) /(max(Xd_original[5,])-min(Xd_original[5,]))
-#	Y[1]=(Y[1]-min(Yd_original[1,]))*2/ (max(Yd_original[1,])-min(Yd_original[1,]))-1
 
-	U[[1]] = tanh( W[[1]] %*% matrix(Xd[,l]) )
 
-	for (m in 2:(M)){
-	  a= W[[m]] %*% U[[m-1]]
-	 # if (m==M)
-	  #  print("A")
-	  #  print(a)
-	  U[[m]] = tanh( a)
-	}
-	print("saidas:")
-#	print(U)
-	print(" Tamanho da particula")
-#	print(( (U[[m]]+1) * (max(Yd_original[1,])-min(Yd_original[1,])))/(2)+min(Yd_original[1,])) 
-	print(unscale((U[[m]])))
-}
 
-for ( i in 46:60)
-  classifica(i)
+
+for ( i in 1:length(erro_val_orig[[k]]))
+  classifica(erro_val_orig[[k]][i])
 
 
 unscale(min(Yd[1,])) == min(Yd_original[1,])
@@ -185,9 +232,12 @@ print(min(erro_max))
 print(unscale(min(erro_max)))
 unscale(0)
 unscale(0.6)
+}
+plot(Erro_validacao,ylab="Medias dos erros quadrados",xlab="k",type='l')
 #a= W[[M]] %*% U[[M-1]]
 #print("U")
 #print( U[m] )
 #print(o==W[[1]])
 #print("U")
 #print(U)
+dev.off()
