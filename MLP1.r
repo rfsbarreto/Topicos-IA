@@ -14,10 +14,10 @@ repmat = function(X,m,n){
 #---------------------------------------------------------------------
 
 unscale<- function(xl){
-	 ( (xl+1) * (max(Yd_original[1,])-min(Yd_original[1,])))/(2)+min(Yd_original[1,])
+	 ( (xl/0.6+1) * (max(Yd_original[1,])-min(Yd_original[1,])))/(2)+min(Yd_original[1,])
 # xl ** (max(Yd_original[1,])-min(Yd_original[1,])))/(2)+min(Yd_original[1,]))
 	}
-eta = 0.3 	#coeficiente aprendizagem
+eta = 0.25 	#coeficiente aprendizagem
 
 M =2		#Numero de camadas 
 
@@ -30,12 +30,14 @@ V = vector('list', M)		#vetor auxiliar, armazena calculo do somatorio dos pesos*
 U = vector('list', M)           #vetor auxiliar,armazena resultado da funçao ativacao
 delta = vector('list', M) 	#representa o delta minusculo
 W = vector('list', M)		#Vetor de Pesos
+Wfinal= vector('list', M) 
 som1=vector('list', M)
 # Geraçao de pesos aleatorios
 set.seed(10000)
 for (m in c(1:M)){
-  W[[m]] = matrix( runif( Jm[m] * En[m] ,-0.1,0.1),Jm[m])
+  W[[m]] = matrix( runif( Jm[m] * En[m] ,-0.5,0.5),Jm[m])
   som1[[m]]=matrix(runif( Jm[m] * En[m] ,0,0),Jm[m])  
+  Wfinal[[m]]=matrix(runif( Jm[m] * En[m] ,1000,1000),Jm[m])
 }
 print(som1)
 o=W[[1]]
@@ -53,14 +55,15 @@ Xd[2,]= (Xd[2,]-min(Xd[2,])) /(max(Xd[2,])-min(Xd[2,]))
 Xd[3,]=(Xd[3,]-min(Xd[3,])) /(max(Xd[3,])-min(Xd[3,]))
 Xd[4,]=(Xd[4,]-min(Xd[4,])) /(max(Xd[4,])-min(Xd[4,]))
 Xd[5,]=(Xd[5,]-min(Xd[5,])) /(max(Xd[5,])-min(Xd[5,]))
-Yd[1,]=(Yd[1,]-min(Yd[1,]))*2/ (max(Yd[1,])-min(Yd[1,]))-1
+Yd[1,]=0.6*((Yd[1,]-min(Yd[1,]))*2/ (max(Yd[1,])-min(Yd[1,]))-1)
 
 
 #print(Xd)
 #print(Yd)
-L =  length(Yd)
-L=41
-ep=700
+L_in =  length(Yd)
+print(L_in)
+L=45
+ep=1000
 #print(sum(head(t(Yd),60))/60)
 y_ = sum( c(head(t(Yd),L)) )/L
 print("Y_")
@@ -73,13 +76,17 @@ print(y_)
  E1=matrix(0,ep,1)
  E2=matrix(0,ep,1)
  E3=matrix(0,ep,1)
+ E4=matrix(110,ep,1)
  EE1=matrix(0,ep,1)
  Erro_quad= matrix(0,ep,L)
+Erro_quad2=matrix(0,ep,L_in - L)
  Ys=matrix(0,ep,L)
  Erro_abs= matrix(0,ep,L)
 # erro_min= matrix(0,ep,1)
  erro_max= matrix(0,ep,1)
 erro_max1= matrix(0,ep,1)
+erro_max2= matrix(110,ep,1)
+Erro_abs1= matrix(0,ep,L)
  EErro_quad=matrix(0,ep,1)
 #som1=0
 ###################}
@@ -91,8 +98,8 @@ for (epoca in 1:ep){
 	for (m in c(1:M)){
   	 som1[[m]]=matrix(runif( Jm[m] * En[m] ,0,0),Jm[m])
 	}
-	print(som1) 
-	for (l in 1:L){  #1:L){
+	#print(som1) 
+	for (l in id){  #1:L){
 	  X = matrix( Xd[,l] )
 	  #print(W[[1]]==W[1])
 	  V[[1]] = W[[1]] %*% X
@@ -107,13 +114,13 @@ for (epoca in 1:ep){
 	  Ys[epoca,l]=Y
 	#  print("sai")
 	 # print(Y)
-	  print(Yd[,l]-Y)
-	  Erro_quad[epoca,l]=t(Y - Yd[,l]) %*% (Y - Yd[,l])
-	  Erro_quad[epoca,l]=Erro_quad[epoca,l]
+	 # print(Yd[,l]-Y)
+	  Erro_quad[epoca,l]=   (Y - Yd[,l])^2 #t(Y - Yd[,l]) %*% (Y - Yd[,l])
+	 # Erro_quad[epoca,l]=Erro_quad[epoca,l]
 	  Erro_abs[epoca,l]=t(  abs(Yd[,l]-Y)    )             
 	  EE[epoca,l]=t(Yd[,l]-y_) %*% (Yd[,l]-y_)
 	  delta[[M]] = (Yd[,l]-Y) * (1/(cosh(V[[M]]))^2) #sech(z) = 1/cosh(z)
-	  print("deltaM:")
+	  #print("deltaM:")
 #          som1= som1 + delta[[M]] 
 	  #print(delta[[M]]) 
 	  aux= 2*eta*delta[[M]] %*% t(U[[M-1]]) #
@@ -166,14 +173,44 @@ for (epoca in 1:ep){
 	#erro_min[epoca]=min(Erro_quad[epoca,])
     	erro_max[epoca]=max(Erro_quad[epoca,])
         erro_max1[epoca]=max(Erro_abs[epoca,])
-	print((som1[[m]]))
-	print(M)
+	#print((som1[[m]]))
+	#print(M)
 '	for (m in M:1)
            if( m == 1)
               W[[m]] = W[[m]] + (eta/L)*(som1[[m]])
            else
              W[[m]] = W[[m]] + (eta/L)*(som1[[m]]) #
 '
+       for ( i in (L+1):L_in){
+	 # print(L_in)
+         # print(i)
+	  X = matrix( Xd[,i] )
+          #print(W[[1]]==W[1])
+          V[[1]] = W[[1]] %*% X
+          #print(t(V[[1]]))
+          U[[1]] = tanh( V[[1]] )
+          #print(t(U[[1]]))
+          for (m in 2:M){
+            V[[m]] = W[[m]] %*% U[[m-1]]
+            U[[m]] = tanh( V[[m]] )
+          }
+	  Y = U[[m]]
+	  Erro_quad2[epoca,i-L]=t(Y - Yd[,i]) %*% (Y - Yd[,i])
+          Erro_abs1[epoca,i-L]=t(  abs(Yd[,l]-Y)    )
+
+      }
+      erro_max2[epoca]=max(Erro_abs1[epoca,])
+
+      E4[epoca]=mean(Erro_quad2[epoca,])
+      if (E4[epoca] <= min(E4)){
+         Wfinal = W
+         print("sai") 
+         print(E4[epoca])
+         print(min(E4))
+	 print(erro_max2[epoca] )
+         print(min(erro_max2))
+	 print(epoca)
+     }     
 }
 #print( Erro_quad[5,60])
 squared_R = c(rep(0,ep))
@@ -184,15 +221,16 @@ print("vai ser true!")
 #print(Erro_quad[,L])
 print(sum(E[1,]))
 plot(Erro_quad[,L],type='l')
-plot(E3,ylab="Media do erro quadrado",type='l')
+plot(E3,ylab="Media do erro quadrado treinamento",type='l')
+plot(E4,ylab="Media do erro quadrado validacao",type='l')
 plot(E2,ylab="Media do erro Absoluto",type='l')
 plot(squared_R,type='l')
 plot(unscale(Ys[,41]),type='l')#,xlim=c(0,1000),ylim=c(0,1))
 #axis(1)
 #axis(side=1, at=c(0:23))
 #axis(side=2, at=seq(0, 600, by=100))
-plot((erro_max),type='l')
 plot((erro_max1),type='l')
+plot((erro_max2),type='l')
 
 
 #X = matrix( c(1, 1) )
@@ -201,18 +239,16 @@ print(" pesos finais:")
 print(W)
 
 
-classifica<- function(l) {       #X=c(2.3,7.37,1860,0.55,641)#c(0,30.7,5300,0.5,661)
-#	X[1]= (X[1]-min(Xd_original[1,])) /(max(Xd_original[1,])-min(Xd_original[1,]))
-#	X[2]= (X[2]-min(Xd_original[2,])) /(max(Xd_original[2,])-min(Xd_original[2,]))
-#	X[3]=(X[3]-min(Xd_original[3,])) /(max(Xd_original[3,])-min(Xd_original[3,]))
-#	X[4]=(X[4]-min(Xd_original[4,])) /(max(Xd_original[4,])-min(Xd_original[4,]))
-#	X[5]=(X[5]-min(Xd_original[5,])) /(max(Xd_original[5,])-min(Xd_original[5,]))
+classifica<- function(l) {  
+     #X=c(2.3,7.37,1860,0.55,641)#c(0,30.7,5300,0.5,661) #	X[1]= (X[1]-min(Xd_original[1,])) /(max(Xd_original[1,])-min(Xd_original[1,]))
+#	X[2]= (X[2]-min(Xd_original[2,])) /(max(Xd_original[2,])-min(Xd_original[2,])) #	X[3]=(X[3]-min(Xd_original[3,])) /(max(Xd_original[3,])-min(Xd_original[3,]))
+#	X[4]=(X[4]-min(Xd_original[4,])) /(max(Xd_original[4,])-min(Xd_original[4,])) #	X[5]=(X[5]-min(Xd_original[5,])) /(max(Xd_original[5,])-min(Xd_original[5,]))
 #	Y[1]=(Y[1]-min(Yd_original[1,]))*2/ (max(Yd_original[1,])-min(Yd_original[1,]))-1
 
-	U[[1]] = tanh( W[[1]] %*% matrix(Xd[,l]) )
+	U[[1]] = tanh( Wfinal[[1]] %*% matrix(Xd[,l]) )
 
 	for (m in 2:(M)){
-	  a= W[[m]] %*% U[[m-1]]
+	  a= Wfinal[[m]] %*% U[[m-1]]
 	 # if (m==M)
 	  #  print("A")
 	  #  print(a)
