@@ -17,7 +17,7 @@ unscale<- function(xl){
 	 ( (xl+1) * (max(Yd_original[1,])-min(Yd_original[1,])))/(2)+min(Yd_original[1,])
 # xl ** (max(Yd_original[1,])-min(Yd_original[1,])))/(2)+min(Yd_original[1,]))
 	}
-eta = 0.4 	#coeficiente aprendizagem
+eta = 0.3 	#coeficiente aprendizagem
 
 M =2		#Numero de camadas 
 
