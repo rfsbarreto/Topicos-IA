@@ -37,7 +37,7 @@ for (m in c(1:M)){
   W[[m]] = matrix( runif( Jm[m] * En[m] ,-0.1,0.1),Jm[m])
   som1[[m]]=matrix(runif( Jm[m] * En[m] ,0,0),Jm[m])  
 }
-
+print(som1)
 o=W[[1]]
 
 #leitura de dados
@@ -79,6 +79,7 @@ print(y_)
  Erro_abs= matrix(0,ep,L)
 # erro_min= matrix(0,ep,1)
  erro_max= matrix(0,ep,1)
+erro_max1= matrix(0,ep,1)
  EErro_quad=matrix(0,ep,1)
 #som1=0
 ###################}
@@ -87,6 +88,10 @@ for (epoca in 1:ep){
 	id = t(sample(L,replace=F))
 #	id = seq(1,L)
 #	print(id)
+	for (m in c(1:M)){
+  	 som1[[m]]=matrix(runif( Jm[m] * En[m] ,0,0),Jm[m])
+	}
+	print(som1) 
 	for (l in 1:L){  #1:L){
 	  X = matrix( Xd[,l] )
 	  #print(W[[1]]==W[1])
@@ -100,15 +105,15 @@ for (epoca in 1:ep){
 	  }
 	  Y = U[[m]]
 	  Ys[epoca,l]=Y
-	  print("sai")
-	  print(Y)
-	  print(Yd[,l])
+	#  print("sai")
+	 # print(Y)
+	  print(Yd[,l]-Y)
 	  Erro_quad[epoca,l]=t(Y - Yd[,l]) %*% (Y - Yd[,l])
 	  Erro_quad[epoca,l]=Erro_quad[epoca,l]
 	  Erro_abs[epoca,l]=t(  abs(Yd[,l]-Y)    )             
 	  EE[epoca,l]=t(Yd[,l]-y_) %*% (Yd[,l]-y_)
 	  delta[[M]] = (Yd[,l]-Y) * (1/(cosh(V[[M]]))^2) #sech(z) = 1/cosh(z)
-	  #print("deltaM:")
+	  print("deltaM:")
 #          som1= som1 + delta[[M]] 
 	  #print(delta[[M]]) 
 	  aux= 2*eta*delta[[M]] %*% t(U[[M-1]]) #
@@ -135,10 +140,13 @@ for (epoca in 1:ep){
 	  #print("MMMM")
 	  #print(M)
           for (m in M:1)
-           if( m == 1)
-              W[[m]] = W[[m]] + eta*delta[[m]] %*% t(X)
-           else
+           if( m == 1){
+             W[[m]] = W[[m]] + eta*delta[[m]] %*% t(X)
+              som1[[m]]=som1[[m]] + delta[[m]] %*% t(X)
+	   }else{
               W[[m]] = W[[m]] + eta*delta[[m]] %*% t(U[[m-1]]) #
+	       som1[[m]]=som1[[m]] + delta[[m]] %*%t(U[[m-1]])
+	   }
 	  #for (m in M:1)
 	  # if( m == 1)
            #    som1[[m]] = som1[[m]] + delta[[m]] %*% t(X)
@@ -157,12 +165,15 @@ for (epoca in 1:ep){
 	EE1[epoca]=sum(EE[epoca,])
 	#erro_min[epoca]=min(Erro_quad[epoca,])
     	erro_max[epoca]=max(Erro_quad[epoca,])
-	#for (m in M:1)
-        #   if( m == 1)
-        #      W[[m]] = W[[m]] + (eta)*(delta[[m]] %*% t(X))
-        #   else
-         #     W[[m]] = W[[m]] + (eta)*(delta[[m]] %*% t(U[[m-1]])) #
-
+        erro_max1[epoca]=max(Erro_abs[epoca,])
+	print((som1[[m]]))
+	print(M)
+'	for (m in M:1)
+           if( m == 1)
+              W[[m]] = W[[m]] + (eta/L)*(som1[[m]])
+           else
+             W[[m]] = W[[m]] + (eta/L)*(som1[[m]]) #
+'
 }
 #print( Erro_quad[5,60])
 squared_R = c(rep(0,ep))
@@ -181,6 +192,8 @@ plot(unscale(Ys[,41]),type='l')#,xlim=c(0,1000),ylim=c(0,1))
 #axis(side=1, at=c(0:23))
 #axis(side=2, at=seq(0, 600, by=100))
 plot((erro_max),type='l')
+plot((erro_max1),type='l')
+
 
 #X = matrix( c(1, 1) )
 #print()
