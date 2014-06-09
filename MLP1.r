@@ -124,9 +124,10 @@ for(k in 1:n_fold){
 	temp = c(rep(0,folded))
 	for(k in 1:n_fold){	
 		for(v in 1:folded){
-			temp[v] = orig[(v+((k-1)*folded))]}
-		erro_val_orig[[k]] = temp[!is.na(temp)]# Tira os NA dos vetores
+			temp[v] = orig[(v+((k-1)*folded))]
 		}
+		erro_val_orig[[k]] = temp[!is.na(temp)]# Tira os NA dos vetores
+	}
 
 
 	
@@ -150,8 +151,8 @@ for(k in 1:n_fold){
 			U[[1]] = tanh( V[[1]] )
 			#print(t(U[[1]]))
 			for (m in 2:M){
-			V[[m]] = W[[m]] %*% U[[m-1]]
-			U[[m]] = tanh( V[[m]] )
+				V[[m]] = W[[m]] %*% U[[m-1]]
+				U[[m]] = tanh( V[[m]] )
 			}
 			Y = U[[m]]
 			Erro_quad[epoca,l]=t(Y - Yd[,l]) %*% (Y - Yd[,l])
@@ -167,14 +168,14 @@ for(k in 1:n_fold){
 			# print(W[[M]])	
 			W[[M]] =W[[M]] + aux
 			for (m in M-1:1){
-			teste=0.0
-			#for ( p 
-			#teste=delta[M]*W
-			delta[[m]] = t(W[[m+1]]) %*% delta[[m+1]] * (1/cosh(V[[m]]) )^2 #sech(z) = 1/cosh(z)
-			if( m == 1)
-			W[[m]] = W[[m]] + 2*eta*delta[[m]] %*% t(X)
-			else
-			W[[m]] = W[[m]] + 2*eta*delta[[m]] %*% t(U[[m-1]]) #
+				teste=0.0
+				#for ( p 
+				#teste=delta[M]*W
+				delta[[m]] = t(W[[m+1]]) %*% delta[[m+1]] * (1/cosh(V[[m]]) )^2 #sech(z) = 1/cosh(z)
+				if( m == 1)
+				W[[m]] = W[[m]] + 2*eta*delta[[m]] %*% t(X)
+				else
+				W[[m]] = W[[m]] + 2*eta*delta[[m]] %*% t(U[[m-1]]) #
 			}
 			#print("Y")
 			#print(delta)
