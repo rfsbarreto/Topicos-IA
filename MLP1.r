@@ -69,8 +69,8 @@ Yd[1,]=(Yd[1,]-min(Yd[1,]))*2/ (max(Yd[1,])-min(Yd[1,]))-1
 #print(Xd)
 #print(Yd)
 L =  length(Yd)
-L=41
-ep=400
+L=60
+ep=1000
 #print(sum(head(t(Yd),60))/60)
 y_ = sum( c(head(t(Yd),L)) )/L
 print("Y_")
@@ -87,152 +87,154 @@ orig = seq(1,L)
 erro_val_orig = vector('list',n_fold)
 Erro_validacao= matrix(0,n_fold,1)
 # Separando os K subconjuntos de vetores
+
+
 for(k in 1:n_fold){
 
-V = vector('list', M)		#vetor auxiliar, armazena calculo do somatorio dos pesos* entradas
-#print(V)
-U = vector('list', M)           #vetor auxiliar,armazena resultado da funçao ativacao
-delta = vector('list', M) 	#representa o delta minusculo
-W = vector('list', M)		#Vetor de Pesos
+	V = vector('list', M)		#vetor auxiliar, armazena calculo do somatorio dos pesos* entradas
+	#print(V)
+	U = vector('list', M)           #vetor auxiliar,armazena resultado da funçao ativacao
+	delta = vector('list', M) 	#representa o delta minusculo
+	W = vector('list', M)		#Vetor de Pesos
 
 
-# Geraçao de pesos aleatorios
-set.seed(10000)
-for (m in c(1:M)){
-  W[[m]] = matrix( runif( Jm[m] * En[m] ,-0.2,0.2),Jm[m])
-}
+	# Geraçao de pesos aleatorios
+	set.seed(10000)
+	for (m in c(1:M)){
+	  W[[m]] = matrix( runif( Jm[m] * En[m] ,-0.2,0.2),Jm[m])
+	}
 
-o=W[[1]]
+	o=W[[1]]
 
 
-###########inicializ_matrizes <- function(){
- EE=matrix(0,ep,L)
- E=matrix(0,ep,L)
- E1=matrix(0,ep,1)
- E2=matrix(0,ep,1)
- E3=matrix(0,ep,1)
- EE1=matrix(0,ep,1)
- Erro_quad= matrix(0,ep,L)
- Erro_abs= matrix(0,ep,L)
- erro_min= matrix(0,ep,1)
- erro_max= matrix(0,ep,1)
- EErro_quad=matrix(0,ep,1)
+	###########inicializ_matrizes <- function(){
+	EE=matrix(0,ep,L)
+	E=matrix(0,ep,L)
+	E1=matrix(0,ep,1)
+	E2=matrix(0,ep,1)
+	E3=matrix(0,ep,1)
+	EE1=matrix(0,ep,1)
+	Erro_quad= matrix(0,ep,L)
+	Erro_abs= matrix(0,ep,L)
+	erro_min= matrix(0,ep,1)
+	erro_max= matrix(0,ep,1)
+	EErro_quad=matrix(0,ep,1)
 
 
 	temp = c(rep(0,folded))
-	for(v in 1:folded){
-	temp[v] = orig[(v+((k-1)*folded))]
-	}
-	erro_val_orig[[k]] = temp[!is.na(temp)]# Tira os NA dos vetores
-}
+	for(k in 1:n_fold){	
+		for(v in 1:folded){
+			temp[v] = orig[(v+((k-1)*folded))]}
+		erro_val_orig[[k]] = temp[!is.na(temp)]# Tira os NA dos vetores
+		}
 
 
-for(k in 1:n_fold){
+	
 
 
-for(b in 2:n_fold-1){
+		for(b in 2:n_fold-1){
+			erro_val = union(erro_val_orig[[b]],erro_val_orig[[(b+1)]])
+		}
 
-erro_val = union(erro_val_orig[[b]],erro_val_orig[[(b+1)]])
-}
+	erro_val = setdiff(erro_val,erro_val_orig[[k]])
 
-erro_val = setdiff(erro_val,erro_val_orig[[k]])
+	for (epoca in 1:ep){
+	#	id = t(sample(L,replace=F))
+	#	id = seq(1,L)
+		id = t(erro_val)
+	#	print(id)
+		for (l in id){  #1:L){
+			X = matrix( Xd[,l] )
+			V[[1]] = W[[1]] %*% X
+			#print(t(V[[1]]))
+			U[[1]] = tanh( V[[1]] )
+			#print(t(U[[1]]))
+			for (m in 2:M){
+			V[[m]] = W[[m]] %*% U[[m-1]]
+			U[[m]] = tanh( V[[m]] )
+			}
+			Y = U[[m]]
+			Erro_quad[epoca,l]=t(Y - Yd[,l]) %*% (Y - Yd[,l])
+			# Erro_quad[epoca,l]=Erro_quad[epoca,l]/2
+			Erro_abs[epoca,l]=t(  abs(Yd[,l]-Y)    )             
+			EE[epoca,l]=t(Yd[,l]-y_) %*% (Yd[,l]-y_)
+			delta[[M]] = (Yd[,l]-Y) * (1/cosh(V[[M]]) )^2 #sech(z) = 1/cosh(z)
+			#print("deltaM:")
 
-for (epoca in 1:ep){
-#	id = t(sample(L,replace=F))
-#	id = seq(1,L)
-	id = t(erro_val)
-#	print(id)
-	for (l in id){  #1:L){
-	  X = matrix( Xd[,l] )
-	  V[[1]] = W[[1]] %*% X
-	  #print(t(V[[1]]))
-	  U[[1]] = tanh( V[[1]] )
-	  #print(t(U[[1]]))
-	  for (m in 2:M){
-	    V[[m]] = W[[m]] %*% U[[m-1]]
-	    U[[m]] = tanh( V[[m]] )
-	  }
-	  Y = U[[m]]
-	  Erro_quad[epoca,l]=t(Y - Yd[,l]) %*% (Y - Yd[,l])
-	 # Erro_quad[epoca,l]=Erro_quad[epoca,l]/2
-	  Erro_abs[epoca,l]=t(  abs(Yd[,l]-Y)    )             
-	  EE[epoca,l]=t(Yd[,l]-y_) %*% (Yd[,l]-y_)
-	  delta[[M]] = (Yd[,l]-Y) * (1/cosh(V[[M]]) )^2 #sech(z) = 1/cosh(z)
-	  #print("deltaM:")
-
-	  #print(delta[[M]]) 
-	  aux= 2*eta*delta[[M]] %*% t(U[[M-1]]) #
-	 # print(aux)
-	 # print(W[[M]])	
-	  W[[M]] =W[[M]] + aux
-	  for (m in M-1:1){
-	    teste=0.0
-	    #for ( p 
-	    #teste=delta[M]*W
-	    delta[[m]] = t(W[[m+1]]) %*% delta[[m+1]] * (1/cosh(V[[m]]) )^2 #sech(z) = 1/cosh(z)
-	    if( m == 1)
-		W[[m]] = W[[m]] + 2*eta*delta[[m]] %*% t(X)
-	    else
-		W[[m]] = W[[m]] + 2*eta*delta[[m]] %*% t(U[[m-1]]) #
-	  }
-	  #print("Y")
-	  #print(delta)
-	}
+			#print(delta[[M]]) 
+			aux= 2*eta*delta[[M]] %*% t(U[[M-1]]) #
+			# print(aux)
+			# print(W[[M]])	
+			W[[M]] =W[[M]] + aux
+			for (m in M-1:1){
+			teste=0.0
+			#for ( p 
+			#teste=delta[M]*W
+			delta[[m]] = t(W[[m+1]]) %*% delta[[m+1]] * (1/cosh(V[[m]]) )^2 #sech(z) = 1/cosh(z)
+			if( m == 1)
+			W[[m]] = W[[m]] + 2*eta*delta[[m]] %*% t(X)
+			else
+			W[[m]] = W[[m]] + 2*eta*delta[[m]] %*% t(U[[m-1]]) #
+			}
+			#print("Y")
+			#print(delta)
+		}
 #	EErro_quad[epoca]=sum(Erro_quad[epoca,])
 	E1[epoca]=sum(Erro_quad[epoca,])   #soma dos erros quadrados
-    E3[epoca]=mean(Erro_quad[epoca,]) 
+	E3[epoca]=mean(Erro_quad[epoca,]) 
 	E2[epoca]=mean(Erro_abs[epoca,])   # media dos erros absolutos	
-	
 	EE1[epoca]=sum(EE[epoca,])
 	erro_min[epoca]=min(Erro_quad[epoca,])
-    	erro_max[epoca]=max(Erro_quad[epoca,])
+	erro_max[epoca]=max(Erro_quad[epoca,])
 	
-}
+	}
 
 
-Erro_validacao[k]=length(erro_val_orig[[k]])*mean(E3)
-#print( Erro_quad[5,60])
-squared_R = c(rep(0,ep))
-y_ = sum(Yd[,l] ) /L
-for (i in 1:ep)
-  squared_R[i]=1- ( E1[i] / EE1[i] )
+	Erro_validacao[k]=length(erro_val_orig[[k]])*mean(E3)
+	#print( Erro_quad[5,60])
+	squared_R = c(rep(0,ep))
+	y_ = sum(Yd[,l] ) /L
+	for (i in 1:ep)
+		squared_R[i]=1- ( E1[i] / EE1[i] )
 
-print(erro_val)  
+	print(erro_val)  
 
-  
-print("vai ser true!")
-#print(Erro_quad[,L])
-print(sum(E[1,]))
-plot(Erro_quad[,L],type='l')
-plot(E3,ylab="Media do erro quadrado",type='l')
-plot(E2,ylab="Media do erro Absoluto",type='l')
-plot(squared_R,type='l')
-plot((erro_min),type='l')
-plot((erro_max),type='l')
+	  
+	print("vai ser true!")
+	#print(Erro_quad[,L])
+	print(sum(E[1,]))
+	plot(Erro_quad[,L],type='l')
+	plot(E3,ylab="Media do erro quadrado",type='l')
+	plot(E2,ylab="Media do erro Absoluto",type='l')
+	plot(squared_R,type='l')
+	plot((erro_min),type='l')
+	plot((erro_max),type='l')
 
-#X = matrix( c(1, 1) )
-#print()
-print(" pesos finais:")
-print(W)
-
-
-
+	#X = matrix( c(1, 1) )
+	#print()
+	print(" pesos finais:")
+	print(W)
 
 
 
-for ( i in 1:length(erro_val_orig[[k]]))
-  classifica(erro_val_orig[[k]][i])
 
 
-unscale(min(Yd[1,])) == min(Yd_original[1,])
-unscale(max(Yd[1,])) ==max(Yd_original[1,]) 
-print(min(erro_min))
-print(unscale(min(erro_min)))
-print(min(erro_max))
-print(unscale(min(erro_max)))
-unscale(0)
-unscale(0.6)
-}
+
+	for ( i in 1:length(erro_val_orig[[k]]))
+		classifica(erro_val_orig[[k]][i])
+
+
+	unscale(min(Yd[1,])) == min(Yd_original[1,])
+	unscale(max(Yd[1,])) ==max(Yd_original[1,]) 
+	print(min(erro_min))
+	print(unscale(min(erro_min)))
+	print(min(erro_max))
+	print(unscale(min(erro_max)))
+	unscale(0)
+	unscale(0.6)
+
+	
+	}
 plot(Erro_validacao,ylab="Medias dos erros quadrados",xlab="k",type='l')
 #a= W[[M]] %*% U[[M-1]]
 #print("U")
